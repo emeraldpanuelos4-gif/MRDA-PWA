@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MRDA AcademeAccess Login</title>
+  <title>MRDA AcademeAccess</title>
+  
+  <!-- PWA manifest -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1e3cff">
   
-  <style>
-    /* Basic reset and body */
+<style>
+    /* Body style */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -16,60 +18,90 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
+      padding: 10px; /* Extra space so the white box never touches edges */
     }
 
-    /* Login container */
-    .login-box {
+    /* White login box */
+    .container {
       background: white;
-      padding: 30px;
+      width: 100%;
+      max-width: 360px;
+      padding: 30px 25px;
       border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      width: 90%;
-      max-width: 400px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
       text-align: center;
+      margin: 20px; /* Space from screen edges */
     }
 
-    .login-box img {
-      width: 100px;
+    /* Logo */
+    .logo {
+      width: 150px;
+      margin-bottom: -10px;
+    }
+
+    /* Heading */
+    h2 {
+      color: #0a1fb0;
       margin-bottom: 20px;
     }
 
-    .login-box input {
-      width: 100%;
+    /* Input fields */
+    input {
+      width: 90%;
       padding: 12px;
       margin: 10px 0;
-      border-radius: 10px;
+      border-radius: 12px;
       border: 1px solid #ccc;
       font-size: 16px;
+      outline: none;
     }
 
-    .login-box button {
-      width: 100%;
-      padding: 14px;
-      margin-top: 15px;
-      border: none;
+    input:focus {
+      border-color: #1e3cff;
+    }
+
+    /* Login button */
+    button {
+      width: 90%;
+      padding: 12px;
+      margin-top: 12px;
       border-radius: 12px;
-      background-color: #1e3cff;
+      border: none;
+      background: #1e3cff;
       color: white;
       font-size: 16px;
       cursor: pointer;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
 
-    .login-box button:hover {
-      background-color: #0a1fb0;
+    button:hover {
+      background: #0a1fb0;
     }
-  </style>
+
+    /* Footer text */
+    .footer {
+      margin-top: 15px;
+      font-size: 12px;
+      color: #777;
+    }
+</style>
 </head>
 <body>
 
-<div class="login-box">
+<div class="container">
   <!-- Replace with your school logo -->
-  <img src="https://i.imgur.com/jy3vL7M.png" alt="MRDA Logo">
+  <img src="logo.png" class="logo" alt="MRDA Logo">
+
+  <h2>MRDA AcademeAccess</h2>
+
   <input type="text" placeholder="Email" id="email">
   <input type="password" placeholder="Password" id="password">
-  <button id="loginBtn">Login</button>
+
+  <button id="Login">Login</button>
+
+  <div class="footer">
+    © MRDA Academic Center Inc.
+  </div>
 </div>
 
 <!-- Firebase SDK -->
