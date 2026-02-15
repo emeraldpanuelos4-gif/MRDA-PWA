@@ -9,7 +9,6 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1e3cff">
 
-  <!-- CSS -->
   <style>
     body {
       margin: 0;
@@ -36,47 +35,31 @@
       gap: 20px;
     }
 
-.card {
-  background-color: white;
-  color: #1e3cff;
-  width: 45%;
-  max-width: 200px;
-  min-width: 140px;
-  padding: 15px 20px;
-  border-radius: 16px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-
-  /* Flexbox for horizontal alignment */
-  display: flex;
-  flex-direction: row; /* horizontal line */
-  align-items: center; /* vertically center icon + text */
-  justify-content: center; /* horizontally center */
-  gap: 10px; /* space between icon and text */
-}
+    .card {
+      background-color: white;
+      color: #1e3cff;
+      width: 80%;
+      max-width: 300px;
+      text-align: center;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 18px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
 
     .card:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 20px rgba(0,0,0,0.25);
     }
 
-    .card img {
-      width: 60px;
-      margin-bottom: 0px;
-    }
-
-    .card p {
-      margin: 0;
-      font-weight: bold;
-    }
-
-    @media (max-width: 480px) {
+    @media (min-width: 480px) {
       .card {
-        width: 80%;
+        width: 45%;
       }
     }
-
   </style>
 </head>
 <body>
@@ -84,53 +67,53 @@
 <header>Student Dashboard</header>
 
 <div class="dashboard-container">
-
-<div class="card" onclick="location.href='announcements.html'">
-  <img src="announcement.png" alt="Announcements" width="40" height="40">
-  <p>Announcements</p>
-</div>
-
-  <div class="card" onclick="location.href='schedule.html'">
-    <img src="schedule.png" alt="Schedule">
-    <p>Schedule</p>
-  </div>
-
-  <div class="card" onclick="location.href='zoom.html'">
-    <img src="zoom.png" alt="Zoom">
-    <p>Zoom Meetings</p>
-  </div>
-
-  <div class="card" onclick="location.href='messages.html'">
-    <img src="message.png" alt="Messages">
-    <p>Messages</p>
-  </div>
-
-  <div class="card" onclick="location.href='study-timer.html'">
-    <img src="studytimer.png" alt="Study Timer">
-    <p>Study Timer</p>
-  </div>
-
-  <div class="card" onclick="location.href='mentalhealth.html'">
-    <img src="mentalhealth.png" alt="Mental Health">
-    <p>Mental Health</p>
-  </div>
-
-  <div class="card" onclick="location.href='profile.html'">
-    <img src="profile.png" alt="Profile">
-    <p>My Profile</p>
-  </div>
-
-  <div class="card" onclick="logout()">
-    <img src="logout.png" alt="Logout">
-    <p>Logout</p>
-  </div>
-
+  <div class="card" onclick="location.href='announcements.html'">Announcements</div>
+  <div class="card" onclick="location.href='schedule.html'">Schedule</div>
+  <div class="card" onclick="location.href='zoom.html'">Zoom Meetings</div>
+  <div class="card" onclick="location.href='messages.html'">Messages</div>
+  <div class="card" onclick="location.href='study-timer.html'">Study Timer</div>
+  <div class="card" onclick="location.href='mentalhealth.html'">Mental Health</div>
+  <div class="card" onclick="location.href='profile.html'">My Profile</div>
+  <div class="card" onclick="logout()">Logout</div>
 </div>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+<script>
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyAtBlO4Iwj5TMYlvwQeENndd7fcV-lyXl4",
+    authDomain: "mrda-pwa.firebaseapp.com",
+    projectId: "mrda-pwa",
+    storageBucket: "mrda-pwa.appspot.com",
+    messagingSenderId: "59701076462",
+    appId: "1:59701076462:web:be714b43e3f04d61c32eff",
+    measurementId: "G-VDJW06X9PH"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  // Redirect if not logged in
+  auth.onAuthStateChanged(user => {
+    if (!user) {
+      window.location.href = "index.html";
+    }
+  });
+
+  // Logout function
+  function logout() {
+    auth.signOut().then(() => {
+      window.location.href = "index.html";
+    });
+  }
+</script>
+
+</body>
+</html>rebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
 <script>
   // Firebase config
