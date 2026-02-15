@@ -10,15 +10,15 @@
   <meta name="theme-color" content="#1e3cff">
 
   <style>
-    body {
+      body {
       margin: 0;
       font-family: Arial, sans-serif;
       background: linear-gradient(135deg, #0a1fb0, #1e3cff);
       min-height: 100vh;
-      color: white;
+      color: #fff;
     }
-
-    header {
+                                        
+      header {
       text-align: center;
       padding: 18px;
       font-size: 20px;
@@ -26,15 +26,11 @@
       background: rgba(0,0,0,0.2);
     }
 
-    .container {
-      padding: 20px;
-    }
-
     .welcome {
       font-size: 18px;
       margin-bottom: 15px;
     }
-
+    
     .dashboard-container {
       display: flex;
       flex-wrap: wrap;
@@ -42,32 +38,31 @@
       padding: 20px;
       gap: 20px;
     }
-
+    
     .card {
-      background: white;
+      background-color: white;
       color: #1e3cff;
-      border-radius: 15px;
-      padding: 20px;
+      width: 80%;
+      max-width: 300px;
       text-align: center;
-      font-weight: bold;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
       cursor: pointer;
-    }
-
-    .card:active {
-      transform: scale(0.96);
-    }
-
-    .logout {
-      margin-top: 25px;
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      border: none;
-      background: white;
-      color: #1e3cff;
       font-weight: bold;
-      font-size: 15px;
+      font-size: 18px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+    }
+
+     @media (min-width: 480px) {
+      .card {
+        width: 45%;
+      }
     }
   </style>
 </head>
