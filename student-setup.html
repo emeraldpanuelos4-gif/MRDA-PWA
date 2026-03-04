@@ -53,47 +53,47 @@ button{
 
 <div class="container">
   <img src="logo.png" class="logo">
-<h2>Student Profile Setup</h2>
+  <h2>Student Profile Setup</h2>
 
-<input type="file" id="profilePic">
+  <input type="file" id="profilePic">
 
-<input id="firstName" placeholder="First Name">
-<input id="middleName" placeholder="Middle Name">
-<input id="lastName" placeholder="Last Name">
-<input id="suffix" placeholder="Suffix">
+  <input id="firstName" placeholder="First Name">
+  <input id="middleName" placeholder="Middle Name">
+  <input id="lastName" placeholder="Last Name">
+  <input id="suffix" placeholder="Suffix">
 
-<input id="username" placeholder="Username (example@mrda.com)">
-<input type="password" id="newPassword" placeholder="New Password (8+ chars)">
+  <input id="username" placeholder="Username (example@mrda.com)">
+  <input type="password" id="newPassword" placeholder="New Password (8+ chars)">
 
-<select id="grade">
-<option value="">Select Grade</option>
-<option>Grade 11</option>
-<option>Grade 12</option>
-</select>
+  <select id="grade">
+    <option value="">Select Grade</option>
+    <option>Grade 11</option>
+    <option>Grade 12</option>
+  </select>
 
-<select id="section">
-<option value="">Select Section</option>
-<option>Silang</option>
-<option>Bonifacio</option>
-<option>Rizal</option>
-<option>Mabini</option>
-</select>
+  <select id="section">
+    <option value="">Select Section</option>
+    <option>Silang</option>
+    <option>Bonifacio</option>
+    <option>Rizal</option>
+    <option>Mabini</option>
+  </select>
 
-<select id="strand">
-<option value="">Select Strand</option>
-<option>ABM</option>
-<option>GAS</option>
-<option>HUMSS</option>
-<option>STEM</option>
-<option>TVL</option>
-</select>
+  <select id="strand">
+    <option value="">Select Strand</option>
+    <option>ABM</option>
+    <option>GAS</option>
+    <option>HUMSS</option>
+    <option>STEM</option>
+    <option>TVL</option>
+  </select>
 
-<textarea id="bio" maxlength="100" placeholder="Bio (100 characters max)"></textarea>
+  <textarea id="bio" maxlength="100" placeholder="Bio (100 characters max)"></textarea>
 
-<input id="emailInput" placeholder="Public Email">
-<input id="contactNumber" placeholder="Contact Number">
+  <input id="emailInput" placeholder="Public Email">
+  <input id="contactNumber" placeholder="Contact Number">
 
-<button id="saveBtn">Sign In</button>
+  <button id="saveBtn">Sign In</button>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -109,50 +109,54 @@ firebase.initializeApp({
   storageBucket:"mrda-pwa.appspot.com"
 });
 
-const auth=firebase.auth();
-const db=firebase.firestore();
-const storage=firebase.storage();
+const auth = firebase.auth();
+const db = firebase.firestore();
+const storage = firebase.storage();
 
-document.getElementById("saveBtn").addEventListener("click",async()=>{
+document.getElementById("saveBtn").addEventListener("click", async () => {
 
-const user=auth.currentUser;
-const newPass=newPassword.value;
+  const user = auth.currentUser;
+  if (!user) return alert("You must be logged in first.");
 
-if(newPass.length<8){
-alert("Password must be 8 characters.");
-return;
-}
+  const newPass = document.getElementById("newPassword").value;
+  if (newPass.length < 8) {
+    alert("Password must be at least 8 characters.");
+    return;
+  }
 
-await user.updatePassword(newPass);
-await user.updateEmail(username.value);
+  // Update password and email in Firebase Auth
+  await user.updatePassword(newPass);
+  await user.updateEmail(document.getElementById("username").value);
 
-let imageUrl="";
-const file=profilePic.files[0];
+  // Upload profile picture if selected
+  let imageUrl = "";
+  const file = document.getElementById("profilePic").files[0];
+  if (file) {
+    const ref = storage.ref("profilePics/" + user.uid);
+    await ref.put(file);
+    imageUrl = await ref.getDownloadURL();
+  }
 
-if(file){
-const ref=storage.ref("profilePics/"+user.uid);
-await ref.put(file);
-imageUrl=await ref.getDownloadURL();
-}
+  // Save data to Firestore (users collection)
+  await db.collection("users").doc(user.uid).set({
+    role: "student",  // important!
+    profileImage: imageUrl,
+    firstName: document.getElementById("firstName").value,
+    middleName: document.getElementById("middleName").value,
+    lastName: document.getElementById("lastName").value,
+    suffix: document.getElementById("suffix").value,
+    username: document.getElementById("username").value,
+    grade: document.getElementById("grade").value,
+    section: document.getElementById("section").value,
+    strand: document.getElementById("strand").value,
+    bio: document.getElementById("bio").value,
+    email: document.getElementById("emailInput").value,
+    contactNumber: document.getElementById("contactNumber").value,
+    profileCompleted: true
+  });
 
-await db.collection("users").doc(user.uid).update({
-profileImage:imageUrl,
-firstName:firstName.value,
-middleName:middleName.value,
-lastName:lastName.value,
-suffix:suffix.value,
-username:username.value,
-grade:grade.value,
-section:section.value,
-strand:strand.value,
-bio:bio.value,
-email:emailInput.value,
-contactNumber:contactNumber.value,
-profileCompleted:true
-});
-
-window.location.href="student-home.html";
-
+  // Redirect to student home
+  window.location.href = "student-home.html";
 });
 </script>
 </body>
