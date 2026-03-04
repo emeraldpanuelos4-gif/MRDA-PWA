@@ -97,23 +97,50 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
+const db = firebase.firestore();
 
-document.getElementById("loginBtn").addEventListener("click", async function() {
+document.getElementById("loginBtn").addEventListener("click", async function () {
 
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
 
-  if(!email || !password){
+  if (!email || !password) {
     alert("Please enter email and password.");
     return;
   }
 
   try {
-    await auth.signInWithEmailAndPassword(email, password);
 
-    alert("Login successful!");
+    // 🔐 Login user
+    const userCred = await auth.signInWithEmailAndPassword(email, password);
+    const user = userCred.user;
+    const uid = user.uid;
 
-    // ✅ DIRECT REDIRECT TO STUDENT HOME
+    console.log("User UID:", uid);
+
+    // 📄 Get user document
+    const docRef = db.collection("users").doc(uid);
+    const doc = await docRef.get();
+
+    let role = "student"; // default role
+
+    if (doc.exists) {
+      role = doc.data().role || "student";
+    } else {
+      // If no document exists, create one
+      if (email.includes("teacher")) {
+        role = "teacher";
+      }
+
+      await docRef.set({
+        role: role,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+
+    console.log("User Role:", role);
+
+    // ✅ ALWAYS redirect to student home
     window.location.href = "student-home.html";
 
   } catch (error) {
@@ -123,6 +150,33 @@ document.getElementById("loginBtn").addEventListener("click", async function() {
 
 });
 </script>
+
+</body>
+</html>r-setup.html";
+    } else {
+      // Otherwise, go to respective home page
+      window.location.href = data.role === "student" ? "student-home.html" : "teacher-home.html";
+    }
+
+  }catch(error){
+    alert(error.message);
+  }
+});
+</script>
+
+</body>
+</html>/script>
+
+</body>
+</html>
+} catch (error) {
+   alert(error.code + " : " + error.message);
+   console.log(error);
+  });
+</script>
+
+</body>
+</html>
 
 </body>
 </html>
