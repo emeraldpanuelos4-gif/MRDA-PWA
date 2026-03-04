@@ -127,10 +127,7 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
       window.location.href = role === "student" ? "student-home.html" : "teacher-home.html";
       return;
     }
-
-    const data = doc.data();
-
-
+    
   }catch(error){
     alert(error.message);
   }
