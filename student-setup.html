@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,7 @@
 <style>
 body{
   margin:0;
-  font-family:Arial;
+  font-family:Arial, sans-serif;
   background:linear-gradient(135deg,#0a1fb0,#1e3cff);
   display:flex;
   justify-content:center;
@@ -46,6 +46,10 @@ button{
   background:#1e3cff;
   color:white;
   font-size:16px;
+  cursor:pointer;
+}
+button:hover{
+  background:#0a1fb0;
 }
 </style>
 </head>
@@ -93,9 +97,10 @@ button{
   <input id="emailInput" placeholder="Public Email">
   <input id="contactNumber" placeholder="Contact Number">
 
-  <button id="saveBtn">Sign In</button>
+  <button id="saveBtn">Complete Setup</button>
 </div>
 
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
@@ -124,40 +129,46 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
     return;
   }
 
-  // Update password and email in Firebase Auth
-  await user.updatePassword(newPass);
-  await user.updateEmail(document.getElementById("username").value);
+  try {
+    // Update password and email in Firebase Auth
+    await user.updatePassword(newPass);
+    await user.updateEmail(document.getElementById("username").value);
 
-  // Upload profile picture if selected
-  let imageUrl = "";
-  const file = document.getElementById("profilePic").files[0];
-  if (file) {
-    const ref = storage.ref("profilePics/" + user.uid);
-    await ref.put(file);
-    imageUrl = await ref.getDownloadURL();
+    // Upload profile picture if selected
+    let imageUrl = "";
+    const file = document.getElementById("profilePic").files[0];
+    if (file) {
+      const ref = storage.ref("profilePics/" + user.uid);
+      await ref.put(file);
+      imageUrl = await ref.getDownloadURL();
+    }
+
+    // Update Firestore document (do NOT overwrite role or createdAt)
+    await db.collection("users").doc(user.uid).update({
+      profileImage: imageUrl,
+      firstName: document.getElementById("firstName").value,
+      middleName: document.getElementById("middleName").value,
+      lastName: document.getElementById("lastName").value,
+      suffix: document.getElementById("suffix").value,
+      username: document.getElementById("username").value,
+      grade: document.getElementById("grade").value,
+      section: document.getElementById("section").value,
+      strand: document.getElementById("strand").value,
+      bio: document.getElementById("bio").value,
+      email: document.getElementById("emailInput").value,
+      contactNumber: document.getElementById("contactNumber").value,
+      profileCompleted: true
+    });
+
+    // Redirect to student home page
+    window.location.href = "student-home.html";
+
+  } catch (error) {
+    alert("Error saving profile: " + error.message);
   }
 
-  // Save data to Firestore (users collection)
-  await db.collection("users").doc(user.uid).set({
-    role: "student",  // important!
-    profileImage: imageUrl,
-    firstName: document.getElementById("firstName").value,
-    middleName: document.getElementById("middleName").value,
-    lastName: document.getElementById("lastName").value,
-    suffix: document.getElementById("suffix").value,
-    username: document.getElementById("username").value,
-    grade: document.getElementById("grade").value,
-    section: document.getElementById("section").value,
-    strand: document.getElementById("strand").value,
-    bio: document.getElementById("bio").value,
-    email: document.getElementById("emailInput").value,
-    contactNumber: document.getElementById("contactNumber").value,
-    profileCompleted: true
-  });
-
-  // Redirect to student home
-  window.location.href = "student-home.html";
 });
 </script>
+
 </body>
-</html>
+  </html>
