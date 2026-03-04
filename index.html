@@ -86,7 +86,7 @@ button:hover{ background:#0a1fb0; }
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyAtBlO4Iwj5TMYlvwQeENndd7fcV-lyXl4",
+  apiKey: "YOUR_API_KEY",
   authDomain: "mrda-pwa.firebaseapp.com",
   projectId: "mrda-pwa",
   storageBucket: "mrda-pwa.appspot.com",
@@ -95,42 +95,32 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+
 const auth = firebase.auth();
-const db = firebase.firestore();
 
-document.getElementById("loginBtn").addEventListener("click", async () => {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+document.getElementById("loginBtn").addEventListener("click", async function() {
 
-  try{
-    const userCred = await auth.signInWithEmailAndPassword(email,password);
-    const user = userCred.user;
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
 
-    // Reference to the user's Firestore document
-    const docRef = db.collection("users").doc(user.uid);
-    const doc = await docRef.get();
-
-    // If first login / user document does not exist
-    if(!doc.exists){
-      // Assign role safely (default to student)
-      let role = "student"; 
-      // Optional: you can set role based on an admin or verified teacher emails
-      if(email.includes("teacher")) role = "teacher";
-
-      await docRef.set({
-        role: role,
-        profileCompleted: false,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-
-      // Redirect to respective home page
-      window.location.href = role === "student" ? "student-home.html" : "teacher-home.html";
-      return;
-    }
-    
-  }catch(error){
-    alert(error.message);
+  if(!email || !password){
+    alert("Please enter email and password.");
+    return;
   }
+
+  try {
+    await auth.signInWithEmailAndPassword(email, password);
+
+    alert("Login successful!");
+
+    // ✅ DIRECT REDIRECT TO STUDENT HOME
+    window.location.href = "student-home.html";
+
+  } catch (error) {
+    alert(error.code + " : " + error.message);
+    console.log(error);
+  }
+
 });
 </script>
 
