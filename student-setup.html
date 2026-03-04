@@ -123,6 +123,18 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
   const user = auth.currentUser;
   if (!user) return alert("You must be logged in first.");
 
+  // Check if email is verified
+  await user.reload(); // Refresh user info
+  if (!user.emailVerified) {
+    try {
+      await user.sendEmailVerification();
+      alert("A verification email has been sent to your inbox. Please verify your email before completing the setup.");
+    } catch (error) {
+      alert("Error sending verification email: " + error.message);
+    }
+    return;
+  }
+
   const newPass = document.getElementById("newPassword").value;
   if (newPass.length < 8) {
     alert("Password must be at least 8 characters.");
@@ -143,7 +155,7 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
       imageUrl = await ref.getDownloadURL();
     }
 
-    // Update Firestore document (do NOT overwrite role or createdAt)
+    // Update Firestore document
     await db.collection("users").doc(user.uid).update({
       profileImage: imageUrl,
       firstName: document.getElementById("firstName").value,
@@ -171,4 +183,4 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
 </script>
 
 </body>
-  </html>
+</html>
