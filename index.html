@@ -1,170 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MRDA AcademeAccess</title>
-  
-  <!-- PWA manifest -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#1e3cff">
-  
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MRDA AcademeAccess</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1e3cff">
+
 <style>
-    /* Body style */
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #0a1fb0, #1e3cff);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 10px; /* Extra space so the white box never touches edges */
-    }
-
-    /* White login box */
-    .container {
-      background: white;
-      width: 100%;
-      max-width: 360px;
-      padding: 30px 25px;
-      border-radius: 16px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
-      text-align: center;
-      margin: 20px; /* Space from screen edges */
-    }
-
-    /* Logo */
-    .logo {
-      width: 150px;
-      margin-bottom: -10px;
-    }
-
-    /* Heading */
-    h2 {
-      color: #0a1fb0;
-      margin-bottom: 20px;
-    }
-
-    /* Input fields */
-    input {
-      width: 90%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 12px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-      outline: none;
-    }
-
-    input:focus {
-      border-color: #1e3cff;
-    }
-
-    /* Login button */
-    button {
-      width: 90%;
-      padding: 12px;
-      margin-top: 12px;
-      border-radius: 12px;
-      border: none;
-      background: #1e3cff;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #0a1fb0;
-    }
-
-    /* Footer text */
-    .footer {
-      margin-top: 15px;
-      font-size: 12px;
-      color: #777;
-    }
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:linear-gradient(135deg,#0a1fb0,#1e3cff);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  padding:10px;
+}
+.container{
+  background:white;
+  width:80%;
+  max-width:360px;
+  padding:30px 25px;
+  border-radius:16px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.25);
+  text-align:center;
+}
+.logo{
+  width:150px;
+  margin-bottom:-10px;
+}
+h2{
+  color:#0a1fb0;
+  margin-bottom:20px;
+}
+input{
+  width:90%;
+  padding:12px;
+  margin:10px 0;
+  border-radius:12px;
+  border:1px solid #ccc;
+  font-size:16px;
+}
+input:focus{ border-color:#1e3cff; }
+button{
+  width:90%;
+  padding:12px;
+  margin-top:12px;
+  border-radius:12px;
+  border:none;
+  background:#1e3cff;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+}
+button:hover{ background:#0a1fb0; }
+.footer{
+  margin-top:15px;
+  font-size:12px;
+  color:#777;
+}
 </style>
 </head>
 <body>
 
 <div class="container">
-  <!-- Replace with your school logo -->
-  <img src="logo.png" class="logo" alt="MRDA Logo">
-
+  <img src="logo.png" class="logo">
   <h2>MRDA AcademeAccess</h2>
 
-  <input type="text" placeholder="Email" id="email">
-  <input type="password" placeholder="Password" id="password">
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
 
   <button id="loginBtn">Login</button>
 
-  <div class="footer">
-    © MRDA Academic Center Inc.
-  </div>
+  <div class="footer">© MRDA Academic Center Inc.</div>
 </div>
 
-<!-- Firebase SDK -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
-<!-- Firebase Initialization -->
 <script>
-  // Firebase config (your project)
-  const firebaseConfig = {
-    apiKey: "AIzaSyAtBlO4Iwj5TMYlvwQeENndd7fcV-lyXl4",
-    authDomain: "mrda-pwa.firebaseapp.com",
-    projectId: "mrda-pwa",
-	storageBucket: "mrda-pwa.appspot.com",
-    messagingSenderId: "59701076462",
-    appId: "1:59701076462:web:be714b43e3f04d61c32eff",
-    measurementId: "G-VDJW06X9PH"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyAtBlO4Iwj5TMYlvwQeENndd7fcV-lyXl4",
+  authDomain: "mrda-pwa.firebaseapp.com",
+  projectId: "mrda-pwa",
+  storageBucket: "mrda-pwa.appspot.com",
+  messagingSenderId: "59701076462",
+  appId: "1:59701076462:web:be714b43e3f04d61c32eff"
+};
 
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+document.getElementById("loginBtn").addEventListener("click", async () => {
+
+  const email = email.value;
+  const password = password.value;
+
+  try{
+    const userCred = await auth.signInWithEmailAndPassword(email,password);
+    const user = userCred.user;
+
+    const docRef = db.collection("users").doc(user.uid);
+    const doc = await docRef.get();
+
+    // First login
+    if(!doc.exists){
+
+      let role = email.includes("teacher") ? "teacher" : "student";
+
+      await docRef.set({
+        role: role,
+        profileCompleted:false,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      if(role==="student"){
+        window.location.href="student-setup.html";
+      } else {
+        window.location.href="teacher-setup.html";
+      }
+      return;
+    }
+
+    const data = doc.data();
+
+    if(!data.profileCompleted){
+      if(data.role==="student"){
+        window.location.href="student-setup.html";
+      } else {
+        window.location.href="teacher-setup.html";
+      }
+    } else {
+      if(data.role==="student"){
+        window.location.href="student-home.html";
+      } else {
+        window.location.href="teacher-home.html";
+      }
+    }
+
+  }catch(error){
+    alert(error.message);
+  }
+});
 </script>
 
-<!-- Login Logic -->
-<script>
-const loginBtn = document.getElementById("loginBtn");
-loginBtn.addEventListener("click", async () => {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+</body>
+</html> await db.collection("users").doc(user.uid).get();
+    let role = "Student";
 
-try {
-  const userCredential = await auth.signInWithEmailAndPassword(email, password);
-  const user = userCredential.user;
+    if (doc.exists) {
+      role = doc.data().role;
+    }
 
-  // Get role from Firestore
-  const doc = await db.collection("users").doc(user.uid).get();
+    alert("Login success!");
+    window.location.href = "dashboard.html";
 
-  let role = "Student";
-
-  if (doc.exists) {
-    role = doc.data().role;
+  } catch (error) {
+    alert(error.code + " : " + error.message);
+    console.log(error);
   }
+});
+</script>
 
-  // Show success alert
-  alert("Login successful!");
+</body>
+</html>});
+</script>
 
-  // Redirect based on role
-  if (role === "Student") {
-    window.location.href = "student.html";
-  } else if (role === "Teacher") {
-    window.location.href = "teacher.html";
-  } else {
-    window.location.href = "staff.html";
-  }
-
+</body>
+</html>
 } catch (error) {
-  alert(error.code + " : " + error.message);
-}
+   alert(error.code + " : " + error.message);
+   console.log(error);
   });
 </script>
+
+</body>
+</html>
 
 </body>
 </html>
