@@ -110,73 +110,36 @@ document.getElementById("loginBtn").addEventListener("click", async function () 
   }
 
   try {
+  const userCredential = await auth.signInWithEmailAndPassword(email, password);
+  const user = userCredential.user;
 
-    // 🔐 Login user
-    const userCred = await auth.signInWithEmailAndPassword(email, password);
-    const user = userCred.user;
-    const uid = user.uid;
+  // 🔥 Get role from Firestore
+  const doc = await db.collection("users").doc(user.uid).get();
 
-    console.log("User UID:", uid);
+  let role = "Student";
 
-    // 📄 Get user document
-    const docRef = db.collection("users").doc(uid);
-    const doc = await docRef.get();
+  if (doc.exists) {
+    role = doc.data().role;
+  }
 
-    let role = "student"; // default role
+  // ✅ Show success alert
+  alert("Login successful!");
 
-    if (doc.exists) {
-      role = doc.data().role || "student";
-    } else {
-      // If no document exists, create one
-      if (email.includes("teacher")) {
-        role = "teacher";
-      }
-
-      await docRef.set({
-        role: role,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-    }
-
-    console.log("User Role:", role);
-
-    // ✅ ALWAYS redirect to student home
+  // ✅ Redirect based on role
+  if (role === "Student") {
     window.location.href = "student-home.html";
-
-  } catch (error) {
-    alert(error.code + " : " + error.message);
-    console.log(error);
+  } else if (role === "Teacher") {
+    window.location.href = "teacher-homw.html";
+  } else {
+    window.location.href = "staff-home.html";
   }
 
-});
-</script>
-
-</body>
-</html>r-setup.html";
-    } else {
-      // Otherwise, go to respective home page
-      window.location.href = data.role === "student" ? "student-home.html" : "teacher-home.html";
-    }
-
-  }catch(error){
-    alert(error.message);
-  }
-});
-</script>
-
-</body>
-</html>/script>
-
-</body>
-</html>
 } catch (error) {
-   alert(error.code + " : " + error.message);
-   console.log(error);
-  });
-</script>
+  alert(error.code + " : " + error.message);
+  }
 
-</body>
-</html>
+});
+</script>
 
 </body>
 </html>
