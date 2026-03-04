@@ -48,9 +48,8 @@ button{
   font-size:16px;
   cursor:pointer;
 }
-button:hover{
-  background:#0a1fb0;
-}
+button:hover{ background:#0a1fb0; }
+button:disabled{ background:#888; cursor:not-allowed; }
 </style>
 </head>
 <body>
@@ -97,7 +96,8 @@ button:hover{
   <input id="emailInput" placeholder="Public Email">
   <input id="contactNumber" placeholder="Contact Number">
 
-  <button id="saveBtn">Complete Setup</button>
+  <button id="verifyBtn">Send Verification Email</button>
+  <button id="saveBtn" disabled>Complete Setup</button>
 </div>
 
 <!-- Firebase -->
@@ -118,45 +118,65 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 const storage = firebase.storage();
 
-document.getElementById("saveBtn").addEventListener("click", async () => {
+let user;
 
-  const user = auth.currentUser;
-  if (!user) return alert("You must be logged in first.");
+// Listen for auth state
+auth.onAuthStateChanged(async u => {
+  if(!u) return window.location.href = "index.html";
+  user = u;
 
-  // Check if email is verified
-  await user.reload(); // Refresh user info
-  if (!user.emailVerified) {
-    try {
-      await user.sendEmailVerification();
-      alert("A verification email has been sent to your inbox. Please verify your email before completing the setup.");
-    } catch (error) {
-      alert("Error sending verification email: " + error.message);
-    }
+  // If email already verified, enable save button
+  await user.reload();
+  if(user.emailVerified){
+    document.getElementById("saveBtn").disabled = false;
+    document.getElementById("verifyBtn").style.display = "none";
+  }
+});
+
+// Send verification email button
+document.getElementById("verifyBtn").addEventListener("click", async ()=>{
+  if(!user) return alert("You must be logged in first.");
+  try{
+    await user.sendEmailVerification();
+    alert("Verification email sent! Please check your inbox and click the link, then press Complete Setup.");
+  }catch(e){
+    alert("Error sending verification: "+e.message);
+  }
+});
+
+// Complete Setup button
+document.getElementById("saveBtn").addEventListener("click", async ()=>{
+
+  if(!user) return alert("You must be logged in first.");
+  await user.reload();
+
+  if(!user.emailVerified){
+    alert("Your email is not verified yet. Please check your inbox.");
     return;
   }
 
   const newPass = document.getElementById("newPassword").value;
-  if (newPass.length < 8) {
+  if(newPass.length < 8){
     alert("Password must be at least 8 characters.");
     return;
   }
 
-  try {
-    // Update password and email in Firebase Auth
+  try{
     await user.updatePassword(newPass);
     await user.updateEmail(document.getElementById("username").value);
 
     // Upload profile picture if selected
     let imageUrl = "";
     const file = document.getElementById("profilePic").files[0];
-    if (file) {
-      const ref = storage.ref("profilePics/" + user.uid);
+    if(file){
+      const ref = storage.ref("profilePics/"+user.uid);
       await ref.put(file);
       imageUrl = await ref.getDownloadURL();
     }
 
-    // Update Firestore document
+    // Save data to Firestore
     await db.collection("users").doc(user.uid).update({
+      role:"student",
       profileImage: imageUrl,
       firstName: document.getElementById("firstName").value,
       middleName: document.getElementById("middleName").value,
@@ -172,11 +192,10 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
       profileCompleted: true
     });
 
-    // Redirect to student home page
     window.location.href = "student-home.html";
 
-  } catch (error) {
-    alert("Error saving profile: " + error.message);
+  }catch(e){
+    alert("Error completing setup: "+e.message);
   }
 
 });
