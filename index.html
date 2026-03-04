@@ -123,20 +123,13 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
 
-      // Redirect to respective setup page
-      window.location.href = role === "student" ? "student-setup.html" : "teacher-setup.html";
+      // Redirect to respective home page
+      window.location.href = role === "student" ? "student-home.html" : "teacher-home.html";
       return;
     }
 
     const data = doc.data();
 
-    // If profile not completed, redirect to setup
-    if(!data.profileCompleted){
-      window.location.href = data.role === "student" ? "student-setup.html" : "teacher-setup.html";
-    } else {
-      // Otherwise, go to respective home page
-      window.location.href = data.role === "student" ? "student-home.html" : "teacher-home.html";
-    }
 
   }catch(error){
     alert(error.message);
